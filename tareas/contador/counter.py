@@ -1,60 +1,109 @@
 import numpy
+# scipy.special for the sigmoid function expiterations()
 import scipy.special
-import math
-import random
 
-class red:
-    def __init__(self, in, hidN, out, lrate):
-        self.inodes = in
-        self.hnodes = hidN
-        self.onodes = out
-        self.wih = numpy.random.normal(0.001, pow(self.inodes, -0.5), (self.hnodes, self.inodes))
-        self.w = numpy.random.normal(0.001, pow(self.hnodes, -0.5), (self.onodes, self.hnodes))
-        self.lr = lrate
+# neural network class definition
+class neuralNetwork:
+    
+    
+    # initialise the neural network
+    def __init__(self, inputnodes, hiddennodes, outputnodes, learningrate):
+        # set number of nodes in each input, hidden, output layer
+        self.inodes = inputnodes
+        self.hnodes = hiddennodes
+        self.onodes = outputnodes
+        
+        # link weight matrices, wih and who
+        # weights inside the arrays are w_i_j, where link is from node i to node j in the next layer
+        # w11 w21
+        # w12 w22 etc 
+        self.wih = numpy.random.normal(0.0, pow(self.inodes, -0.5), (self.hnodes, self.inodes))
+        self.who = numpy.random.normal(0.0, pow(self.hnodes, -0.5), (self.onodes, self.hnodes))
+
+        # learning rate
+        self.lr = learningrate
+        
+        # activation function is the sigmoid function
         self.activation_function = lambda x: scipy.special.expit(x)
-        pass
-
-    def sethidN(self, num):
-        self.hnodes = num
-    def train(self, inlist, tlist):
-        inp = numpy.array(inlist, ndmin=2).T
-        targets = numpy.array(tlist, ndmin=2).T
         
-        hidden_inp = numpy.dot(self.wih, inp)
-        hout = self.activation_function(hidden_inp)
-        
-        finp = numpy.dot(self.w, hout)
-        fout = self.activation_function(finp)
-        erro = targets - fout
-        herro = numpy.dot(self.w.T, erro) 
-        self.w += self.lr * numpy.dot((erro * fout * (0.999 - fout)), numpy.transpose(hout))
-        self.wih += self.lr * numpy.dot((herro * hout * (0.999 - hout)), numpy.transpose(inp))
         pass
 
     
-    def query(self, inlist):
-        inp = numpy.array(inlist, ndmin=2).T
-        hidden_inp = numpy.dot(self.wih, inp)
-        hout = self.activation_function(hidden_inp)
-        finp = numpy.dot(self.w, hout)
-        fout = self.activation_function(finp)
-        return fout
+    # train the neural network
+    def train(self, inputs_list, targets_list):
+        # convert inputs list to 2d array
+        inputs = numpy.array(inputs_list, ndmin=2).T
+        targets = numpy.array(targets_list, ndmin=2).T
+        
+        # calculate signals into hidden layer
+        hidden_inputs = numpy.dot(self.wih, inputs)
+        # calculate the signals emerging from hidden layer
+        hidden_outputs = self.activation_function(hidden_inputs)
+        
+        # calculate signals into final output layer
+        final_inputs = numpy.dot(self.who, hidden_outputs)
+        # calculate the signals emerging from final output layer
+        final_outputs = self.activation_function(final_inputs)
+        
+        # output layer error is the (target - actual)
+        output_errors = targets - final_outputs
+        # hidden layer error is the output_errors, split by weights, recombined at hidden nodes
+        hidden_errors = numpy.dot(self.who.T, output_errors) 
+        
+        # update the weights for the links between the hidden and output layers
+        self.who += self.lr * numpy.dot((output_errors * final_outputs * (1.0 - final_outputs)), numpy.transpose(hidden_outputs))
+        
+        # update the weights for the links between the input and hidden layers
+        self.wih += self.lr * numpy.dot((hidden_errors * hidden_outputs * (1.0 - hidden_outputs)), numpy.transpose(inputs))
+        
+        pass
 
-inN = 3
-outN = 3
-a = 7
-cant = 400
-hNodes = int((cant*8)/(a*(inN+outN)))
-lrarte = 1
+    
+    # query the neural network
+    def query(self, inputs_list):
+        # convert inputs list to 2d array
+        inputs = numpy.array(inputs_list, ndmin=2).T
+        
+        # calculate signals into hidden layer
+        hidden_inputs = numpy.dot(self.wih, inputs)
+        # calculate the signals emerging from hidden layer
+        hidden_outputs = self.activation_function(hidden_inputs)
+        
+        # calculate signals into final output layer
+        final_inputs = numpy.dot(self.who, hidden_outputs)
+        # calculate the signals emerging from final output layer
+        final_outputs = self.activation_function(final_inputs)
+        
+        return final_outputs
 
-nt = red(inN,hNodes,outN, lrarte)
 
-def train(it):
+# number of input, hidden and output nodes
+inNodes = 3
+outNodes = 3
+a = 7 #Numero arbitrario, recomendable entre 5-10
+cntV = 400
+hNodes = int((cntV*8)/(a*(inNodes+outNodes)))
+# learning rate is 0.3
+learning_rate = 0.7
 
-    for i in range(it):
-        nt.train([ 0.0 ,  0.0 ,  0.0 ], [ 0.0 ,  0.0 ,  1.0 ])
-        nt.train([ 0.0 ,  0.0 ,  1.0 ], [ 0.0 ,  1.0 ,  0.0 ])
-        nt.train([ 0.0 ,  1.0 ,  0.0 ], [ 0.0 ,  1.0 ,  1.0 ])
-        nt.train([ 0.0 ,  1.0 ,  1.0 ], [ 1.0 ,  0.0 ,  0.0 ])
+# create instance of neural network
+n = neuralNetwork(inNodes,hNodes,outNodes, learning_rate)
 
-train(cant)
+
+def training(iterations):
+    while iterations>=0:
+        n.train([ 0.0 ,  0.0 ,  0.0 ], [ 0.0 ,  0.0 ,  1.0 ])
+        n.train([ 0.0 ,  0.0 ,  1.0 ], [ 0.0 ,  1.0 ,  0.0 ])
+        n.train([ 0.0 ,  1.0 ,  0.0 ], [ 0.0 ,  1.0 ,  1.0 ])
+        n.train([ 0.0 ,  1.0 ,  1.0 ], [ 1.0 ,  0.0 ,  0.0 ])
+        n.train([ 1.0 ,  0.0 ,  0.0 ], [ 1.0 ,  0.0 ,  1.0 ])
+        n.train([ 1.0 ,  0.0 ,  1.0 ], [ 1.0 ,  1.0 ,  0.0 ])
+        n.train([ 1.0 ,  1.0 ,  0.0 ], [ 1.0 ,  1.0 ,  1.0 ])
+        n.train([ 1.0 ,  1.0 ,  1.0 ], [ 0.0 ,  0.0 ,  0.0 ])
+        iterations = iterations - 1
+
+def count(v1,v2,v3):
+    x = n.query([v1,v2,v3])
+    print("int: " + v1 + " " + v2 + " " + v3 +" Output ", x[0][0], " ", x[1][0], " ", x[2][0])
+
+training(cntV)
