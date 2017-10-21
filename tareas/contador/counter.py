@@ -57,22 +57,4 @@ def train(it):
         nt.train([ 0.0 ,  1.0 ,  0.0 ], [ 0.0 ,  1.0 ,  1.0 ])
         nt.train([ 0.0 ,  1.0 ,  1.0 ], [ 1.0 ,  0.0 ,  0.0 ])
 
-def contar():
-    quer = n.query([0.0, 0.0, 0.0])
-    print("in: 0 0 0 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([0.0, 0.0, 1.0])
-    print("in: 0 0 1 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([0.0, 1.0, 0.0])
-    print("in: 0 1 0 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([0.0, 1.0, 1.0])
-    print("in: 0 1 1 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([1.0, 0.0, 0.0])
-    print("in: 1 0 0 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([1.0, 0.0, 1.0])
-    print("in: 1 0 1 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([1.0, 1.0, 0.0])
-    print("in: 1 1 0 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-    quer = n.query([1.0, 1.0, 1.0])
-    print("in: 1 1 1 . out ", quer[0][0], ",", quer[1][0], ",", quer[2][0])
-
 train(cant)
