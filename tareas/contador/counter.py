@@ -2,6 +2,9 @@ import numpy
 # scipy.special for the sigmoid function expiterations()
 import scipy.special
 
+
+
+
 # neural network class definition
 class neuralNetwork:
     
@@ -77,6 +80,8 @@ class neuralNetwork:
         return final_outputs
 
 
+
+
 # number of input, hidden and output nodes
 inNodes = 3
 outNodes = 3
@@ -90,20 +95,33 @@ learning_rate = 0.7
 n = neuralNetwork(inNodes,hNodes,outNodes, learning_rate)
 
 
-def training(iterations):
-    while iterations>=0:
-        n.train([ 0.0 ,  0.0 ,  0.0 ], [ 0.0 ,  0.0 ,  1.0 ])
-        n.train([ 0.0 ,  0.0 ,  1.0 ], [ 0.0 ,  1.0 ,  0.0 ])
-        n.train([ 0.0 ,  1.0 ,  0.0 ], [ 0.0 ,  1.0 ,  1.0 ])
-        n.train([ 0.0 ,  1.0 ,  1.0 ], [ 1.0 ,  0.0 ,  0.0 ])
-        n.train([ 1.0 ,  0.0 ,  0.0 ], [ 1.0 ,  0.0 ,  1.0 ])
-        n.train([ 1.0 ,  0.0 ,  1.0 ], [ 1.0 ,  1.0 ,  0.0 ])
-        n.train([ 1.0 ,  1.0 ,  0.0 ], [ 1.0 ,  1.0 ,  1.0 ])
-        n.train([ 1.0 ,  1.0 ,  1.0 ], [ 0.0 ,  0.0 ,  0.0 ])
-        iterations = iterations - 1
-
 def count(v1,v2,v3):
     x = n.query([v1,v2,v3])
     print("int: " + v1 + " " + v2 + " " + v3 +" Output ", x[0][0], " ", x[1][0], " ", x[2][0])
+
+
+def set1():
+    n.train([ 0.0 ,  0.0 ,  0.0 ], [ 0.0 ,  0.0 ,  1.0 ])
+    n.train([ 0.0 ,  0.0 ,  1.0 ], [ 0.0 ,  1.0 ,  0.0 ])
+def set2():
+    n.train([ 0.0 ,  1.0 ,  0.0 ], [ 0.0 ,  1.0 ,  1.0 ])
+    n.train([ 0.0 ,  1.0 ,  1.0 ], [ 1.0 ,  0.0 ,  0.0 ])
+def set3():
+    n.train([ 1.0 ,  0.0 ,  0.0 ], [ 1.0 ,  0.0 ,  1.0 ])
+    n.train([ 1.0 ,  0.0 ,  1.0 ], [ 1.0 ,  1.0 ,  0.0 ])
+def set4():
+    n.train([ 1.0 ,  1.0 ,  0.0 ], [ 1.0 ,  1.0 ,  1.0 ])
+    n.train([ 1.0 ,  1.0 ,  1.0 ], [ 0.0 ,  0.0 ,  0.0 ])
+
+
+def training(iterations):
+    count = iterations
+    while count>=0:
+        set1()
+        set2()
+        set3()
+        set4()
+        count = count - 1
+        print("It# " + it - count)
 
 training(cntV)
